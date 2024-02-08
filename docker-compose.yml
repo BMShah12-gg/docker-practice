@@ -1,0 +1,44 @@
+version: 1.0.1
+services:
+  frontend: 
+    container_name: practice-ui
+    build: ./practice-ui
+    ports:
+      - 3000:3000
+
+  backend: 
+    container_name: backend
+    build: ./backend
+    depends_on: 
+      - database
+    ports:
+      - 3001:3001
+    stdin_open: true
+    tty: true
+
+  database:
+    container_name: db
+    image: mongo
+    ports:
+      - 27017:27017
+    environment: 
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: root
+
+  database-ui:
+    container_name: db-ui
+    image: mongo-express
+    depends_on: 
+      - database
+    restart: always
+    ports:
+      - 3004:8081
+    environment: 
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: root
+      ME_CONFIG_MONGODB_URL: mongodb://root:root@database:27017/
+#     networks: 
+#       - practice
+
+# networks:
+#   practice:
